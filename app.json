@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "A`Rome Kzn",
+    "slug": "arome",
+    "description": "Ваше маленькое и незабываемое путешествие в Италию. Место, где вы всегда сможете отвлечься от городской суеты, при этом находясь в историческом центре Казани.",
+    "version": "0.0.4",
+    "orientation": "portrait",
+    "icon": "./Image/logo-app-ios.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./Image/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "translucent": false,
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "buildNumber": "0.0.4",
+      "bundleIdentifier": "ru.arome.app"
+    },
+    "android": {
+      "versionCode": 4,
+      "adaptiveIcon": {
+        "foregroundImage": "./Image/logo-app-ios.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "ru.arome.app"
+    },
+    "web": {
+      "favicon": "./Image/favicon.png"
+    }
+  }
+}
