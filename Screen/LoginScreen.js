@@ -21,7 +21,6 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { TextInputMask } from 'react-native-masked-text';
 
 const windowWidth = Dimensions.get('window').width;
-const modal = AsyncStorage.getItem("modalhome");
 
 export default class LoginScreen extends React.Component {
 	constructor(props) {
@@ -59,9 +58,14 @@ export default class LoginScreen extends React.Component {
 		}
 		this.passwordInputRef = createRef();
 	}
-	componentDidMount() {
-		if (modal) {
-			this.setState({ modal: modal });
+	async componentDidMount() {
+		try {
+			var modal = await AsyncStorage.getItem('modalhome');
+			if (!modal || modal == 1) {
+				this.setState({ modal: 1 });
+			}
+		} catch (error) {
+			console.error(error);
 		}
 	}
 	setModalVisible = async (id) => {
@@ -74,7 +78,7 @@ export default class LoginScreen extends React.Component {
 			this.setState({ modalVisible: this.state.modalVisible });
 			this.setState({ modal: 1 });
 			try {
-				await AsyncStorage.setItem('modalhome', JSON.stringify(1));
+				await AsyncStorage.setItem('modalhome', JSON.stringify(2));
 			} catch (error) {
 				console.error(error);
 			}
@@ -150,56 +154,56 @@ export default class LoginScreen extends React.Component {
 		return (<Image fadeDuration={0} resizeMode="cover" style={[styles.postImage, { width: windowWidth, height: windowWidth }]} source={item.image} />);
 	}
 	modalView(id) {
-		if (!this.state.modal) {
-			return (
-				<Modal animated animationType="fade" transparent={false} visible={this.state.modalVisible[id].active}>
-					<ScrollView style={styles.modalView}>
-						<Carousel
-							layout={"default"}
-							inactiveSlideOpacity={1}
-							inactiveSlideScale={1}
-							inactiveSlideShift={1}
-							ref={ref => this.carousel = ref}
-							data={this.state.modalVisible[id].data}
-							renderItem={this.renderImages}
-							sliderWidth={windowWidth}
-							itemWidth={windowWidth}
-							onSnapToItem={index => this.setState({ activeIndex: index })}
-						/>
-						<Pagination dotsLength={this.state.modalVisible[id].data.length}
-							activeDotIndex={this.state.activeIndex}
-							containerStyle={{ position: 'absolute', width: '100%', top: windowWidth - 70 }}
-							inactiveDotStyle={{
-								backgroundColor: 'transparent',
-								borderWidth: 1,
-								borderColor: 'rgba(255, 255, 255, 0.92)'
-							}}
-							dotStyle={{ width: 8, height: 8, backgroundColor: 'rgba(255, 255, 255, 0.92)' }}
-							inactiveDotScale={1}
-							inactiveDotOpacity={0.7}
-						/>
-						<View style={styles.modalContent}>
-							<Text style={{ fontSize: 25, marginBottom: 20 }}>{this.state.modalVisible[id].title}</Text>
-							<Text style={{ fontSize: 17 }}>{this.state.modalVisible[id].desc}</Text>
-						</View>
-						<View style={styles.modalBottom}>
-							<TouchableOpacity
-								activeOpacity={0.6}
-								style={styles.buttonBorder}
-								onPress={() => this.setModalVisible(id)}>
-								<Text style={styles.buttonBorderText}>Пропустить</Text>
-								<Icon name='chevron-forward-outline' size={17} type='ionicon' style={{ marginLeft: 10 }} color='#333' />
-							</TouchableOpacity>
-						</View>
-					</ScrollView>
-				</Modal>
-			);
-		}
+
+		return (
+			<Modal animated animationType="fade" transparent={false} visible={this.state.modalVisible[id].active}>
+				<ScrollView style={styles.modalView}>
+					<Carousel
+						layout={"default"}
+						inactiveSlideOpacity={1}
+						inactiveSlideScale={1}
+						inactiveSlideShift={1}
+						ref={ref => this.carousel = ref}
+						data={this.state.modalVisible[id].data}
+						renderItem={this.renderImages}
+						sliderWidth={windowWidth}
+						itemWidth={windowWidth}
+						onSnapToItem={index => this.setState({ activeIndex: index })}
+					/>
+					<Pagination dotsLength={this.state.modalVisible[id].data.length}
+						activeDotIndex={this.state.activeIndex}
+						containerStyle={{ position: 'absolute', width: '100%', top: windowWidth - 70 }}
+						inactiveDotStyle={{
+							backgroundColor: 'transparent',
+							borderWidth: 1,
+							borderColor: 'rgba(255, 255, 255, 0.92)'
+						}}
+						dotStyle={{ width: 8, height: 8, backgroundColor: 'rgba(255, 255, 255, 0.92)' }}
+						inactiveDotScale={1}
+						inactiveDotOpacity={0.7}
+					/>
+					<View style={styles.modalContent}>
+						<Text style={{ fontSize: 25, marginBottom: 20 }}>{this.state.modalVisible[id].title}</Text>
+						<Text style={{ fontSize: 17 }}>{this.state.modalVisible[id].desc}</Text>
+					</View>
+					<View style={styles.modalBottom}>
+						<TouchableOpacity
+							activeOpacity={0.6}
+							style={styles.buttonBorder}
+							onPress={() => this.setModalVisible(id)}>
+							<Text style={styles.buttonBorderText}>Пропустить</Text>
+							<Icon name='chevron-forward-outline' size={17} type='ionicon' style={{ marginLeft: 10 }} color='#333' />
+						</TouchableOpacity>
+					</View>
+				</ScrollView>
+			</Modal>
+		);
+
 	}
 	render() {
 		return (
 			<View style={styles.mainBody}>
-				{(!this.state.modal) ? this.modalView(this.state.activeModal) : null}
+				{(this.state.modal == 1) ? this.modalView(this.state.activeModal) : null}
 				<ScrollView
 					keyboardShouldPersistTaps="handled"
 					contentContainerStyle={{

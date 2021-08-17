@@ -62,14 +62,14 @@ export default class SettingScreen extends React.PureComponent {
 	backButtonClick() {
 		if (this.props.navigation && this.props.navigation.goBack) {
 			if (this.props.route.params && this.props.route.params.action) {
+
 				this.props.navigation.replace('SettingScreen', { data: this.state.optionData });
+
 			} else {
 				this.props.navigation.goBack();
 			}
-			return true;
-		} else {
-			return false;
 		}
+		return true;
 	}
 	getSaveData(key) {
 		if (key) {

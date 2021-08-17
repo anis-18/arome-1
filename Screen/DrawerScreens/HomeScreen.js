@@ -29,15 +29,15 @@ export default class HomeScreen extends React.PureComponent {
 	}
 	backButtonClick() {
 		if (this.props.navigation && this.props.navigation.goBack) {
-			if (this.props.route.params && this.props.route.params.action) {
-				this.props.navigation.replace('SettingScreen', { data: this.state.optionData });
-			} else {
+
+			if (this.props.navigation.canGoBack()) {
 				this.props.navigation.goBack();
+			} else {
+				BackHandler.exitApp();
 			}
-			return true;
-		} else {
-			return false;
+
 		}
+		return true;
 	}
 	async getHome() {
 		const category = await AsyncStorage.getItem("category");
@@ -51,6 +51,7 @@ export default class HomeScreen extends React.PureComponent {
 		}
 	}
 	componentDidMount() {
+
 		this.getHome();
 		this.props.navigation.addListener('focus', () => {
 			this.getData();
