@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import styles from '../Components/Style';
 
@@ -11,7 +11,8 @@ import {
 	SafeAreaView,
 	AsyncStorage,
 	BackHandler,
-	TouchableOpacity
+	TouchableOpacity,
+	StackActions
 } from 'react-native';
 
 import { Button, Icon, ListItem, CheckBox } from 'react-native-elements';
@@ -115,6 +116,7 @@ export default class SettingScreen extends React.PureComponent {
 			}
 		}
 	};
+
 	componentDidMount() {
 		this.props.navigation.setOptions({ title: this.state.optionData.title });
 		if (this.state.optionId == 1) {
