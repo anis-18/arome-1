@@ -1,10 +1,9 @@
-import React, { useState, createRef } from 'react';
+import React, { createRef } from 'react';
 
 //Style global
 import styles from './Components/Style';
 import {
 	Alert,
-	StyleSheet,
 	TextInput,
 	View,
 	Text,
@@ -22,6 +21,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { TextInputMask } from 'react-native-masked-text';
 
 const windowWidth = Dimensions.get('window').width;
+
 export default class LoginScreen extends React.Component {
 	constructor(props) {
 
@@ -29,6 +29,7 @@ export default class LoginScreen extends React.Component {
 		this.state = {
 			userPhone: '',
 			userPassword: '',
+			passwordView: true,
 			loading: false,
 			user: null,
 			modalVisible: [
@@ -52,12 +53,22 @@ export default class LoginScreen extends React.Component {
 				}
 			],
 			activeIndex: 0,
-			activeModal: 0
+			activeModal: 0,
+			modal: 0
 		}
 		this.passwordInputRef = createRef();
 	}
-
-	setModalVisible(id) {
+	async componentDidMount() {
+		try {
+			var modal = await AsyncStorage.getItem('modalhome');
+			if (!modal || modal == 1) {
+				this.setState({ modal: 1 });
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	setModalVisible = async (id) => {
 		if (this.state.modalVisible[id + 1]) {
 			this.state.modalVisible[id].active = false;
 			this.state.modalVisible[id + 1].active = true;
@@ -65,6 +76,12 @@ export default class LoginScreen extends React.Component {
 		} else {
 			this.state.modalVisible[id].active = false;
 			this.setState({ modalVisible: this.state.modalVisible });
+			this.setState({ modal: 1 });
+			try {
+				await AsyncStorage.setItem('modalhome', JSON.stringify(2));
+			} catch (error) {
+				console.error(error);
+			}
 		}
 	}
 	saveData = async (array) => {
@@ -103,10 +120,7 @@ export default class LoginScreen extends React.Component {
 
 			this.setState({ loading: true });
 
-		} else {
-			this.setState({ loading_google: true });
 		}
-
 
 		let formData = new FormData();
 		formData.append('form', 'auth');
@@ -140,6 +154,7 @@ export default class LoginScreen extends React.Component {
 		return (<Image fadeDuration={0} resizeMode="cover" style={[styles.postImage, { width: windowWidth, height: windowWidth }]} source={item.image} />);
 	}
 	modalView(id) {
+
 		return (
 			<Modal animated animationType="fade" transparent={false} visible={this.state.modalVisible[id].active}>
 				<ScrollView style={styles.modalView}>
@@ -183,11 +198,12 @@ export default class LoginScreen extends React.Component {
 				</ScrollView>
 			</Modal>
 		);
+
 	}
 	render() {
 		return (
 			<View style={styles.mainBody}>
-				{this.modalView(this.state.activeModal)}
+				{(this.state.modal == 1) ? this.modalView(this.state.activeModal) : null}
 				<ScrollView
 					keyboardShouldPersistTaps="handled"
 					contentContainerStyle={{
@@ -243,17 +259,24 @@ export default class LoginScreen extends React.Component {
 											/>
 										</View>
 										<TextInput
-											style={[styles.inputStyle, styles.inputPaddingLeft]}
+											style={[styles.inputStyle, styles.inputPaddingLeft, styles.inputPaddingRight]}
 											onChangeText={(UserPassword) => this.setState({ userPassword: UserPassword })}
 											placeholder="Введите пароль"
-											placeholderTextColor={styles.inputTextStyle}
 											keyboardType="default"
 											ref={this.passwordInputRef}
 											onSubmitEditing={Keyboard.dismiss}
 											blurOnSubmit={false}
-											secureTextEntry={true}
+											secureTextEntry={this.state.passwordView}
 											returnKeyType="next"
 										/>
+										<View style={styles.iconInputRight}>
+											<Icon
+												onPress={() => { this.setState({ passwordView: !this.state.passwordView }) }}
+												name='eye-outline'
+												type='ionicon'
+												color='#8D8D8D'
+											/>
+										</View>
 									</View>
 								</View>
 							</View>
@@ -271,6 +294,14 @@ export default class LoginScreen extends React.Component {
 								onPress={() => this.props.navigation.navigate('RegisterScreen')}>
 								<Text style={{ color: '#7B8794' }}>
 									У вас еще нет аккаунта? <Text style={{ color: '#BE5B26' }}>Регистрация</Text>
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[styles.mt_3, { alignSelf: 'center', paddingVertical: 5 }]}
+								activeOpacity={0.6}
+								onPress={() => this.props.navigation.navigate('PolicyUsers')}>
+								<Text style={{ color: '#7B8794' }}>
+									Политика конфиденциальности
 								</Text>
 							</TouchableOpacity>
 						</KeyboardAvoidingView>

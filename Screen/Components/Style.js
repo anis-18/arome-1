@@ -148,7 +148,17 @@ export default StyleSheet.create({
 		paddingHorizontal: 15,
 		paddingVertical: 12
 	},
+	iconInputRight: {
+		position: 'absolute',
+		right: 5,
+		zIndex: 2,
+		paddingHorizontal: 15,
+		paddingVertical: 12
+	},
 	inputPaddingLeft: {
+		paddingLeft: 50
+	},
+	inputPaddingRight: {
 		paddingLeft: 50
 	},
 	inputStyle: {

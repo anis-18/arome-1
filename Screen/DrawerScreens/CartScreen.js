@@ -41,10 +41,17 @@ export default class CartScreen extends React.Component {
 	}
 	backButtonClick() {
 		if (this.props.navigation && this.props.navigation.goBack) {
-			this.props.navigation.replace('CartScreen');
-			return true;
+			if (this.props.route.params && this.props.route.params.data == 'order') {
+				this.props.navigation.navigate('CartScreen', { data: null });
+			} else {
+				if (this.props.navigation.canGoBack()) {
+					this.props.navigation.goBack();
+				} else {
+					BackHandler.exitApp();
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 	async componentDidMount() {
 		if (this.props.route.params && this.props.route.params.data == 'order') {

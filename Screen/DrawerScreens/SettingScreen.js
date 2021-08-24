@@ -60,11 +60,16 @@ export default class SettingScreen extends React.PureComponent {
 		BackHandler.removeEventListener('hardwareBackPress', this.backButtonClick);
 	}
 	backButtonClick() {
-		if (this.props.navigation && this.props.navigation.goBack && this.props.route.params.action) {
-			this.props.navigation.replace('SettingScreen', { data: this.state.optionData });
-			return true;
+		if (this.props.navigation && this.props.navigation.goBack) {
+			if (this.props.route.params && this.props.route.params.action) {
+
+				this.props.navigation.replace('SettingScreen', { data: this.state.optionData });
+
+			} else {
+				this.props.navigation.goBack();
+			}
 		}
-		return false;
+		return true;
 	}
 	getSaveData(key) {
 		if (key) {

@@ -27,6 +27,7 @@ export default class RegisterScreen extends React.Component {
 			userPhone: '',
 			userEmail: '',
 			userPassword: '',
+			passwordView: true,
 			loading: false,
 			user: null
 		}
@@ -77,10 +78,27 @@ export default class RegisterScreen extends React.Component {
 		formData.append('email', this.state.userEmail);
 		formData.append('password', this.state.userPassword);
 
-		fetch(global.site_url, {
-			method: 'POST',
-			body: formData
-		})
+
+		var myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+			var raw = JSON.stringify({
+  				"form": "reg",
+  				"name": this.state.userName,
+				"phone": this.state.userPhone,
+  				"email": this.state.userEmail,
+  				"password": this.state.userPassword
+				});
+
+				var requestOptions = {
+  					method: 'POST',
+  					headers: myHeaders,
+  					body: raw,
+  					redirect: 'follow'
+					};
+
+
+
+		fetch("https://arome16.ru/apiapp/index.php", requestOptions)
 			.then((response) => response.json())
 			.then((responseJson) => {
 				if (responseJson.status == 1) {
@@ -159,7 +177,7 @@ export default class RegisterScreen extends React.Component {
 									placeholder="+7(999)000-00-00"
 									type={'custom'}
 									options={{
-										mask: '+7(999)999-99-99'
+										mask: '+79999999999'
 									}}
 									ref={ref => this.phoneInputRef = ref}
 									value={this.state.userPhone}
@@ -216,9 +234,17 @@ export default class RegisterScreen extends React.Component {
 										ref={this.passwordInputRef}
 										onSubmitEditing={Keyboard.dismiss}
 										blurOnSubmit={false}
-										secureTextEntry={true}
+										secureTextEntry={this.state.passwordView}
 										returnKeyType="next"
 									/>
+									<View style={styles.iconInputRight}>
+										<Icon
+											onPress={() => { this.setState({ passwordView: !this.state.passwordView }) }}
+											name='eye-outline'
+											type='ionicon'
+											color='#8D8D8D'
+										/>
+									</View>
 								</View>
 							</View>
 						</View>
@@ -236,6 +262,14 @@ export default class RegisterScreen extends React.Component {
 							onPress={() => this.props.navigation.navigate('LoginScreen')}>
 							<Text style={{ color: '#7B8794' }}>
 								У вас уже есть аккаунт? <Text style={{ color: '#BE5B26' }}>Войти</Text>
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={[styles.mt_3, { alignSelf: 'center', paddingVertical: 5 }]}
+							activeOpacity={0.6}
+							onPress={() => this.props.navigation.navigate('PolicyUsers')}>
+							<Text style={{ color: '#7B8794' }}>
+								Политика конфиденциальности
 							</Text>
 						</TouchableOpacity>
 					</KeyboardAvoidingView>
