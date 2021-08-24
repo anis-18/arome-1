@@ -78,10 +78,27 @@ export default class RegisterScreen extends React.Component {
 		formData.append('email', this.state.userEmail);
 		formData.append('password', this.state.userPassword);
 
-		fetch(global.site_url, {
-			method: 'POST',
-			body: formData
-		})
+
+		var myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/json");
+			var raw = JSON.stringify({
+  				"form": "reg",
+  				"name": this.state.userName,
+				"phone": this.state.userPhone,
+  				"email": this.state.userEmail,
+  				"password": this.state.userPassword
+				});
+
+				var requestOptions = {
+  					method: 'POST',
+  					headers: myHeaders,
+  					body: raw,
+  					redirect: 'follow'
+					};
+
+
+
+		fetch("https://arome16.ru/apiapp/index.php", requestOptions)
 			.then((response) => response.json())
 			.then((responseJson) => {
 				if (responseJson.status == 1) {
@@ -160,7 +177,7 @@ export default class RegisterScreen extends React.Component {
 									placeholder="+7(999)000-00-00"
 									type={'custom'}
 									options={{
-										mask: '+7(999)999-99-99'
+										mask: '+79999999999'
 									}}
 									ref={ref => this.phoneInputRef = ref}
 									value={this.state.userPhone}
